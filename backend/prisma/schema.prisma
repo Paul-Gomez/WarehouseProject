@@ -1,0 +1,217 @@
+// Schema de Prisma para AlmacenProyecto.
+// Decisiones de diseño documentadas en el README (sección "Modelo de datos").
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Usuarios y autenticación
+// ---------------------------------------------------------------------------
+
+enum Rol {
+  ADMIN
+  COMERCIAL
+  ALMACEN
+}
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  email        String   @unique
+  passwordHash String
+  rol          Rol      @default(COMERCIAL)
+  activo       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  pedidos       Pedido[]
+  refreshTokens RefreshToken[]
+}
+
+// Un registro por sesión/dispositivo. Permite revocar tokens individualmente
+// (logout real) sin invalidar el resto de sesiones del usuario.
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  tokenHash String   @unique
+  usuarioId Int
+  expiraEn  DateTime
+  revocado  Boolean  @default(false)
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+}
+
+// ---------------------------------------------------------------------------
+// Catálogo
+// ---------------------------------------------------------------------------
+
+model Categoria {
+  id        Int      @id @default(autoincrement())
+  nombre    String   @unique
+  createdAt DateTime @default(now())
+
+  productos Producto[]
+}
+
+model Proveedor {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String?
+  telefono  String?
+  direccion String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productos Producto[]
+}
+
+model Producto {
+  id          Int      @id @default(autoincrement())
+  sku         String   @unique
+  nombre      String
+  descripcion String?
+  precio      Decimal  @db.Decimal(10, 2)
+  stock       Int      @default(0)
+  categoriaId Int
+  proveedorId Int?
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoria Categoria  @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
+  proveedor Proveedor? @relation(fields: [proveedorId], references: [id], onDelete: SetNull)
+
+  lineasPedido    LineaPedido[]
+  movimientoStock MovimientoStock[]
+
+  @@index([categoriaId])
+  @@index([proveedorId])
+  @@index([nombre])
+}
+
+enum TipoMovimientoStock {
+  ENTRADA // reposición manual, devolución de proveedor, corrección de inventario
+  SALIDA // venta confirmada, merma, corrección de inventario
+}
+
+// Libro de movimientos de inventario, append-only. `Producto.stock` es un
+// valor cacheado que se recalcula a partir de aquí; este es el registro
+// auditable de "por qué el stock es el que es".
+model MovimientoStock {
+  id         Int                 @id @default(autoincrement())
+  productoId Int
+  tipo       TipoMovimientoStock
+  cantidad   Int
+  motivo     String
+  pedidoId   Int?
+  createdAt  DateTime            @default(now())
+
+  producto Producto @relation(fields: [productoId], references: [id], onDelete: Restrict)
+  pedido   Pedido?  @relation(fields: [pedidoId], references: [id], onDelete: SetNull)
+
+  @@index([productoId])
+  @@index([pedidoId])
+}
+
+// ---------------------------------------------------------------------------
+// Clientes
+// ---------------------------------------------------------------------------
+
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String?  @unique
+  nif       String?  @unique
+  telefono  String?
+  direccion String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pedidos Pedido[]
+}
+
+// ---------------------------------------------------------------------------
+// Pedidos y facturación
+// ---------------------------------------------------------------------------
+
+enum EstadoPedido {
+  BORRADOR
+  CONFIRMADO
+  PAGADO
+  CANCELADO
+}
+
+model Pedido {
+  id        Int          @id @default(autoincrement())
+  numero    String       @unique // p.ej. "PED-2026-0001"
+  clienteId Int
+  usuarioId Int
+  fecha     DateTime     @default(now())
+  estado    EstadoPedido @default(BORRADOR)
+  total     Decimal      @db.Decimal(10, 2)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  cliente Cliente @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+
+  lineas           LineaPedido[]
+  factura          Factura?
+  movimientosStock MovimientoStock[]
+
+  @@index([clienteId])
+  @@index([usuarioId])
+  @@index([estado, fecha])
+}
+
+// Entidad asociativa que resuelve la relación N:M entre Pedido y Producto,
+// añadiendo los atributos propios de la línea (cantidad, precio).
+model LineaPedido {
+  id             Int     @id @default(autoincrement())
+  pedidoId       Int
+  productoId     Int
+  cantidad       Int
+  precioUnitario Decimal @db.Decimal(10, 2) // snapshot: precio del producto en el momento del pedido
+
+  pedido   Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  producto Producto @relation(fields: [productoId], references: [id], onDelete: Restrict)
+
+  @@unique([pedidoId, productoId])
+  @@index([productoId])
+}
+
+enum EstadoFactura {
+  EMITIDA
+  PAGADA
+  VENCIDA
+  ANULADA
+}
+
+model Factura {
+  id               Int           @id @default(autoincrement())
+  numero           String        @unique // p.ej. "FAC-2026-0001"
+  pedidoId         Int           @unique
+  fecha            DateTime      @default(now())
+  fechaVencimiento DateTime
+  baseImponible    Decimal       @db.Decimal(10, 2) // snapshot: suma de líneas sin IVA
+  tipoIva          Decimal       @db.Decimal(5, 2) // snapshot: % de IVA aplicado
+  cuotaIva         Decimal       @db.Decimal(10, 2) // snapshot: importe del IVA
+  total            Decimal       @db.Decimal(10, 2) // snapshot: baseImponible + cuotaIva
+  estado           EstadoFactura @default(EMITIDA)
+  createdAt        DateTime      @default(now())
+
+  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Restrict)
+
+  @@index([estado, fecha])
+}

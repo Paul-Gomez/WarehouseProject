@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: almacenproyecto-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: almacenproyecto
+      POSTGRES_PASSWORD: almacenproyecto
+      POSTGRES_DB: almacenproyecto
+    ports:
+      - '5432:5432'
+    volumes:
+      - almacenproyecto-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U almacenproyecto -d almacenproyecto']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  almacenproyecto-postgres-data:
