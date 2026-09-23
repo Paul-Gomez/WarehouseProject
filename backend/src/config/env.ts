@@ -1,16 +1,29 @@
-/**
- * Lectura centralizada de variables de entorno.
- *
- * En la Fase 2 esto se endurecerá validando el objeto con Zod y fallando
- * al arrancar si falta alguna variable obligatoria. De momento basta con
- * valores por defecto sensatos para desarrollo.
- */
+import { z } from 'zod';
 
-const NODE_ENV = process.env.NODE_ENV ?? 'development';
+/**
+ * Lectura y validación de variables de entorno con Zod.
+ *
+ * Falla rápido al arrancar (en vez de fallar más tarde, a mitad de una
+ * petición, con un mensaje críptico) si falta alguna variable obligatoria
+ * o tiene un formato inválido.
+ */
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  PORT: z.coerce.number().int().positive().default(3000),
+  DATABASE_URL: z.url(),
+});
+
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error('Variables de entorno inválidas:', z.treeifyError(parsed.error));
+  throw new Error('Configuración de entorno inválida. Revisa tu archivo .env.');
+}
 
 export const env = {
-  nodeEnv: NODE_ENV,
-  isProduction: NODE_ENV === 'production',
-  isTest: NODE_ENV === 'test',
-  port: Number(process.env.PORT ?? 3000),
+  nodeEnv: parsed.data.NODE_ENV,
+  isProduction: parsed.data.NODE_ENV === 'production',
+  isTest: parsed.data.NODE_ENV === 'test',
+  port: parsed.data.PORT,
+  databaseUrl: parsed.data.DATABASE_URL,
 } as const;

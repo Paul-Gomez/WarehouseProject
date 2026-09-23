@@ -1,5 +1,11 @@
 import express, { type Express, type Request, type Response } from 'express';
 
+import { errorHandler } from './middlewares/errorHandler.js';
+import { categoriaRouter } from './modules/categoria/categoria.routes.js';
+import { clienteRouter } from './modules/cliente/cliente.routes.js';
+import { productoRouter } from './modules/producto/producto.routes.js';
+import { proveedorRouter } from './modules/proveedor/proveedor.routes.js';
+
 /**
  * Construye la aplicación Express sin ponerla a escuchar.
  *
@@ -16,6 +22,18 @@ export function createApp(): Express {
   app.get('/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
+
+  app.use('/api/categorias', categoriaRouter);
+  app.use('/api/proveedores', proveedorRouter);
+  app.use('/api/clientes', clienteRouter);
+  app.use('/api/productos', productoRouter);
+
+  app.use((_req: Request, res: Response) => {
+    res.status(404).json({ error: 'Recurso no encontrado' });
+  });
+
+  // Debe registrarse el último: es el middleware de errores de Express.
+  app.use(errorHandler);
 
   return app;
 }
