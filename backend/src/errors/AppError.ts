@@ -26,4 +26,12 @@ export class AppError extends Error {
   static badRequest(message: string, details?: unknown): AppError {
     return new AppError(400, message, details);
   }
+
+  static unauthorized(message = 'No autenticado'): AppError {
+    return new AppError(401, message);
+  }
+
+  static forbidden(message = 'No tienes permisos para realizar esta acción'): AppError {
+    return new AppError(403, message);
+  }
 }

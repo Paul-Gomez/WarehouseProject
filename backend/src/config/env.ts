@@ -11,6 +11,14 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.url(),
+
+  // Secretos separados para access y refresh token: si el access token se
+  // filtra, se puede rotar su secreto sin invalidar las sesiones activas
+  // (los refresh tokens), y viceversa.
+  JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET debe tener al menos 32 caracteres'),
+  JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET debe tener al menos 32 caracteres'),
+  JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
+  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -26,4 +34,10 @@ export const env = {
   isTest: parsed.data.NODE_ENV === 'test',
   port: parsed.data.PORT,
   databaseUrl: parsed.data.DATABASE_URL,
+  jwt: {
+    accessSecret: parsed.data.JWT_ACCESS_SECRET,
+    refreshSecret: parsed.data.JWT_REFRESH_SECRET,
+    accessExpiresIn: parsed.data.JWT_ACCESS_EXPIRES_IN,
+    refreshExpiresIn: parsed.data.JWT_REFRESH_EXPIRES_IN,
+  },
 } as const;

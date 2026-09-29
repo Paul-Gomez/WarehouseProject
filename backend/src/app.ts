@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response } from 'express';
 
 import { errorHandler } from './middlewares/errorHandler.js';
+import { authRouter } from './modules/auth/auth.routes.js';
 import { categoriaRouter } from './modules/categoria/categoria.routes.js';
 import { clienteRouter } from './modules/cliente/cliente.routes.js';
 import { productoRouter } from './modules/producto/producto.routes.js';
@@ -23,6 +24,7 @@ export function createApp(): Express {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
+  app.use('/api/auth', authRouter);
   app.use('/api/categorias', categoriaRouter);
   app.use('/api/proveedores', proveedorRouter);
   app.use('/api/clientes', clienteRouter);
