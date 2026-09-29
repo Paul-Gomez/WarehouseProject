@@ -1,4 +1,4 @@
-// Schema de Prisma para AlmacenProyecto.
+// Schema de Prisma para WarehouseProject.
 // Decisiones de diseño documentadas en el README (sección "Modelo de datos").
 
 generator client {

@@ -23,13 +23,13 @@ async function main() {
   const passwordHash = await bcrypt.hash('Password123!', 10);
   const [admin, comercial, almacen] = await Promise.all([
     prisma.usuario.create({
-      data: { nombre: 'Ana Administradora', email: 'admin@almacenproyecto.dev', passwordHash, rol: Rol.ADMIN },
+      data: { nombre: 'Ana Administradora', email: 'admin@warehouseproject.dev', passwordHash, rol: Rol.ADMIN },
     }),
     prisma.usuario.create({
-      data: { nombre: 'Carlos Comercial', email: 'comercial@almacenproyecto.dev', passwordHash, rol: Rol.COMERCIAL },
+      data: { nombre: 'Carlos Comercial', email: 'comercial@warehouseproject.dev', passwordHash, rol: Rol.COMERCIAL },
     }),
     prisma.usuario.create({
-      data: { nombre: 'Marta Almacén', email: 'almacen@almacenproyecto.dev', passwordHash, rol: Rol.ALMACEN },
+      data: { nombre: 'Marta Almacén', email: 'almacen@warehouseproject.dev', passwordHash, rol: Rol.ALMACEN },
     }),
   ]);
 

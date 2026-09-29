@@ -5,7 +5,7 @@ import { prisma } from './config/prisma.js';
 const app = createApp();
 
 const server = app.listen(env.port, () => {
-  console.info(`AlmacenProyecto API escuchando en http://localhost:${env.port} (${env.nodeEnv})`);
+  console.info(`WarehouseProject API escuchando en http://localhost:${env.port} (${env.nodeEnv})`);
 });
 
 async function shutdown(signal: string): Promise<void> {

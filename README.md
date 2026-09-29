@@ -1,4 +1,6 @@
-# AlmacenProyecto
+# WarehouseProject
+
+🌐 **[English version](README.en.md)** · Versión en castellano (esta página)
 
 ERP ligero para la gestión de una tienda / almacén pequeño: catálogo de productos e
 inventario, clientes y proveedores, pedidos con varias líneas, facturación con IVA,
@@ -27,7 +29,7 @@ autenticación, tests, Docker y CI).
 ## Estructura del repositorio
 
 ```
-almacen-proyecto/
+warehouse-project/
 ├── backend/     API REST (Express + Prisma)
 └── frontend/    SPA de React (se añade en la Fase 5)
 ```
