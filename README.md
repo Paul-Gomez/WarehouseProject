@@ -41,8 +41,8 @@ de tener todo el historial en un único repositorio.
 
 - [x] **Fase 0** — Setup inicial (estructura, TypeScript, ESLint + Prettier, README)
 - [x] **Fase 1** — Modelado de datos (diagrama ER, schema de Prisma, migraciones, seed)
-- [ ] **Fase 2** — Backend: CRUD de Producto, Categoría, Cliente y Proveedor
-- [ ] **Fase 3** — Backend: autenticación JWT y autorización por rol
+- [x] **Fase 2** — Backend: CRUD de Producto, Categoría, Cliente y Proveedor
+- [x] **Fase 3** — Backend: autenticación JWT y autorización por rol
 - [ ] **Fase 4** — Backend: pedidos, descuento de stock atómico y facturación
 - [ ] **Fase 5** — Frontend: base (layout, rutas protegidas, login)
 - [ ] **Fase 6** — Frontend: CRUD conectado con paginación y filtros
@@ -176,6 +176,33 @@ npm run dev
 La API queda en `http://localhost:3000`. Comprobación rápida: `GET /health`.
 
 `npm run prisma:studio` abre un explorador visual de la base de datos en `http://localhost:5555`.
+
+## Autenticación y autorización
+
+JWT con access token (corta duración, 15 min) + refresh token (larga duración, 7 días) con
+**rotación**: cada `POST /api/auth/refresh` invalida el refresh token usado y emite uno nuevo,
+así que un refresh token robado y reutilizado por un atacante deja rastro (el dueño legítimo
+falla en su siguiente refresh).
+
+| Endpoint                  | Público | Descripción                                             |
+| -------------------------- | :-----: | -------------------------------------------------------- |
+| `POST /api/auth/login`     |    ✅    | Devuelve `accessToken` + `refreshToken`                  |
+| `POST /api/auth/refresh`   |    ✅    | Rota el refresh token, devuelve un par nuevo              |
+| `POST /api/auth/logout`    |    ✅    | Revoca un refresh token                                  |
+| `GET /api/auth/yo`         |    ❌    | Datos del usuario autenticado                            |
+| `POST /api/auth/registrar` |    ❌    | Solo `ADMIN`: da de alta usuarios (no hay auto-registro)  |
+
+Rutas protegidas: todas las de `/api/categorias`, `/api/proveedores`, `/api/clientes` y
+`/api/productos` exigen `Authorization: Bearer <accessToken>`. La lectura (`GET`) solo pide
+estar autenticado; la escritura exige un rol concreto según quién gestiona ese recurso en la
+vida real:
+
+| Recurso    | Rol de escritura       |
+| ---------- | ----------------------- |
+| Categoría  | `ADMIN`                 |
+| Proveedor  | `ADMIN`, `COMERCIAL`    |
+| Cliente    | `ADMIN`, `COMERCIAL`    |
+| Producto   | `ADMIN`, `ALMACEN`      |
 
 ## Licencia
 
