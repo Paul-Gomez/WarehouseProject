@@ -45,7 +45,7 @@ de tener todo el historial en un único repositorio.
 - [x] **Fase 1** — Modelado de datos (diagrama ER, schema de Prisma, migraciones, seed)
 - [x] **Fase 2** — Backend: CRUD de Producto, Categoría, Cliente y Proveedor
 - [x] **Fase 3** — Backend: autenticación JWT y autorización por rol
-- [ ] **Fase 4** — Backend: pedidos, descuento de stock atómico y facturación
+- [x] **Fase 4** — Backend: pedidos, descuento de stock atómico y facturación
 - [ ] **Fase 5** — Frontend: base (layout, rutas protegidas, login)
 - [ ] **Fase 6** — Frontend: CRUD conectado con paginación y filtros
 - [ ] **Fase 7** — Frontend: dashboard con métricas y gráficas
@@ -60,7 +60,7 @@ Decisiones de diseño:
 - Las líneas de pedido y las facturas guardan **snapshots** de precio e IVA: los datos
   históricos no cambian aunque cambie el precio del producto.
 - Ciclo de vida del pedido: `BORRADOR → CONFIRMADO → PAGADO` (o `CANCELADO`). El stock se
-  descuenta al confirmar, en una transacción atómica (Fase 4).
+  descuenta al confirmar, en una transacción atómica.
 - Libro de movimientos de stock (`MovimientoStock`) append-only para trazabilidad; el campo
   `Producto.stock` es un valor cacheado.
 - Borrado lógico (`activo`) en catálogo; las claves foráneas históricas usan `RESTRICT`.
@@ -205,6 +205,49 @@ vida real:
 | Proveedor  | `ADMIN`, `COMERCIAL`    |
 | Cliente    | `ADMIN`, `COMERCIAL`    |
 | Producto   | `ADMIN`, `ALMACEN`      |
+
+## Pedidos y facturación
+
+Un pedido tiene varias líneas (producto + cantidad) y sigue este ciclo de vida:
+
+```
+BORRADOR ──confirmar──▶ CONFIRMADO ──pagar──▶ PAGADO
+    │                       │
+    └────────cancelar───────┴──────▶ CANCELADO   (un pedido pagado no se puede cancelar)
+```
+
+| Endpoint                          | Quién escribe        | Qué hace                                                        |
+| --------------------------------- | -------------------- | --------------------------------------------------------------- |
+| `GET /api/pedidos`                | cualquier usuario    | Lista con paginación y filtros (`estado`, `clienteId`, `desde`, `hasta`) |
+| `GET /api/pedidos/:id`            | cualquier usuario    | Detalle con líneas, cliente y factura                            |
+| `POST /api/pedidos`               | `ADMIN`, `COMERCIAL` | Crea un pedido en borrador (copia el precio actual de cada producto) |
+| `PATCH /api/pedidos/:id`          | `ADMIN`, `COMERCIAL` | Cambia cliente y/o líneas (solo en borrador)                     |
+| `DELETE /api/pedidos/:id`         | `ADMIN`, `COMERCIAL` | Elimina un borrador                                              |
+| `POST /api/pedidos/:id/confirmar` | `ADMIN`, `COMERCIAL` | Descuenta el stock de todas las líneas en una transacción         |
+| `POST /api/pedidos/:id/pagar`     | `ADMIN`, `COMERCIAL` | Marca el pedido (y su factura, si la hay) como pagado             |
+| `POST /api/pedidos/:id/cancelar`  | `ADMIN`, `COMERCIAL` | Si estaba confirmado, devuelve el stock y anula su factura emitida |
+| `GET /api/facturas`               | cualquier usuario    | Lista con paginación y filtros (`estado`, `clienteId`, `desde`, `hasta`) |
+| `GET /api/facturas/:id`           | cualquier usuario    | Detalle de una factura                                           |
+| `POST /api/facturas`              | `ADMIN`, `COMERCIAL` | Emite la factura de un pedido confirmado o pagado (`{ "pedidoId": 1 }`) |
+| `POST /api/facturas/:id/anular`   | `ADMIN`, `COMERCIAL` | Anula una factura emitida (no una ya pagada)                     |
+
+Cómo se garantiza la consistencia del stock:
+
+- **Atomicidad**: confirmar un pedido es una única transacción de base de datos. Si a
+  cualquier línea le falta stock, se deshace todo (estado, descuentos ya hechos y
+  movimientos), nunca queda un pedido a medias.
+- **Concurrencia**: el stock se descuenta con un `UPDATE ... WHERE stock >= cantidad` en una
+  sola sentencia, y las transiciones de estado con `UPDATE ... WHERE estado = X`. Si dos
+  personas confirman a la vez el último producto, una gana y la otra recibe un `409`; el
+  stock nunca queda negativo ni se descuenta dos veces.
+- **Trazabilidad**: cada descuento o devolución de stock de un pedido queda registrado en
+  `MovimientoStock`.
+- **Numeración**: `PED-AAAA-NNNN` y `FAC-AAAA-NNNN` correlativos por año, asignados bajo un
+  lock de Postgres para que dos peticiones simultáneas no obtengan el mismo número.
+
+`Pedido.total` es la base imponible (suma de líneas, sin IVA). Al facturar se calculan y
+guardan base, IVA y total; el tipo de IVA (`IVA_PORCENTAJE`, 21 % por defecto) y los días de
+vencimiento (`FACTURA_DIAS_VENCIMIENTO`, 30 por defecto) se configuran en el `.env`.
 
 ## Licencia
 

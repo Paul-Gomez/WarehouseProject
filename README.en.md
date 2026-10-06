@@ -45,7 +45,7 @@ benefit of keeping the whole history in a single repository.
 - [x] **Phase 1** — Data modeling (ER diagram, Prisma schema, migrations, seed)
 - [x] **Phase 2** — Backend: CRUD for Product, Category, Customer, and Supplier
 - [x] **Phase 3** — Backend: JWT authentication and role-based authorization
-- [ ] **Phase 4** — Backend: orders, atomic stock deduction, and invoicing
+- [x] **Phase 4** — Backend: orders, atomic stock deduction, and invoicing
 - [ ] **Phase 5** — Frontend: base (layout, protected routes, login)
 - [ ] **Phase 6** — Frontend: connected CRUD with pagination and filters
 - [ ] **Phase 7** — Frontend: dashboard with metrics and charts
@@ -60,7 +60,7 @@ Design decisions:
 - Order lines and invoices store **snapshots** of price and VAT: historical data doesn't
   change even if the product's price later changes.
 - Order lifecycle: `DRAFT → CONFIRMED → PAID` (or `CANCELLED`). Stock is deducted on
-  confirmation, inside an atomic transaction (Phase 4).
+  confirmation, inside an atomic transaction.
 - Append-only stock movement ledger (`MovimientoStock`) for traceability; `Producto.stock`
   is a cached value derived from it.
 - Soft delete (`activo`) in the catalog; historical foreign keys use `RESTRICT`.
@@ -209,6 +209,52 @@ matching who manages that resource in real life:
 | Supplier   | `ADMIN`, `COMERCIAL`     |
 | Customer   | `ADMIN`, `COMERCIAL`     |
 | Product    | `ADMIN`, `ALMACEN`       |
+
+## Orders and invoicing
+
+An order has several lines (product + quantity) and follows this lifecycle:
+
+```
+DRAFT ──confirm──▶ CONFIRMED ──pay──▶ PAID
+   │                   │
+   └──────cancel───────┴──────▶ CANCELLED   (a paid order cannot be cancelled)
+```
+
+(In the API and database the states keep their Spanish names: `BORRADOR`, `CONFIRMADO`,
+`PAGADO`, `CANCELADO`.)
+
+| Endpoint                          | Who can write        | What it does                                                    |
+| --------------------------------- | -------------------- | --------------------------------------------------------------- |
+| `GET /api/pedidos`                | any user             | Paginated list with filters (`estado`, `clienteId`, `desde`, `hasta`) |
+| `GET /api/pedidos/:id`            | any user             | Detail with lines, customer, and invoice                         |
+| `POST /api/pedidos`               | `ADMIN`, `COMERCIAL` | Creates a draft order (copies each product's current price)      |
+| `PATCH /api/pedidos/:id`          | `ADMIN`, `COMERCIAL` | Changes customer and/or lines (drafts only)                      |
+| `DELETE /api/pedidos/:id`         | `ADMIN`, `COMERCIAL` | Deletes a draft                                                  |
+| `POST /api/pedidos/:id/confirmar` | `ADMIN`, `COMERCIAL` | Deducts stock for every line in a single transaction              |
+| `POST /api/pedidos/:id/pagar`     | `ADMIN`, `COMERCIAL` | Marks the order (and its invoice, if any) as paid                 |
+| `POST /api/pedidos/:id/cancelar`  | `ADMIN`, `COMERCIAL` | If confirmed, returns the stock and voids its issued invoice      |
+| `GET /api/facturas`               | any user             | Paginated list with filters (`estado`, `clienteId`, `desde`, `hasta`) |
+| `GET /api/facturas/:id`           | any user             | Invoice detail                                                   |
+| `POST /api/facturas`              | `ADMIN`, `COMERCIAL` | Issues the invoice for a confirmed or paid order (`{ "pedidoId": 1 }`) |
+| `POST /api/facturas/:id/anular`   | `ADMIN`, `COMERCIAL` | Voids an issued invoice (not an already paid one)                 |
+
+How stock consistency is guaranteed:
+
+- **Atomicity**: confirming an order is a single database transaction. If any line lacks
+  stock, everything is rolled back (state change, deductions already made, and movements);
+  an order is never left half-processed.
+- **Concurrency**: stock is deducted with a single `UPDATE ... WHERE stock >= quantity`
+  statement, and state transitions with `UPDATE ... WHERE estado = X`. If two people confirm
+  the last item at the same time, one wins and the other gets a `409`; stock never goes
+  negative or gets deducted twice.
+- **Traceability**: every stock deduction or return caused by an order is recorded in
+  `MovimientoStock`.
+- **Numbering**: `PED-YYYY-NNNN` and `FAC-YYYY-NNNN`, sequential per year, assigned under a
+  Postgres lock so two simultaneous requests can't get the same number.
+
+`Pedido.total` is the taxable base (sum of lines, before VAT). When invoicing, base, VAT, and
+total are calculated and stored; the VAT rate (`IVA_PORCENTAJE`, 21% by default) and the due
+days (`FACTURA_DIAS_VENCIMIENTO`, 30 by default) are set in `.env`.
 
 ## License
 
