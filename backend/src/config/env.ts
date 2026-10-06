@@ -19,6 +19,9 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET debe tener al menos 32 caracteres'),
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
+
+  IVA_PORCENTAJE: z.coerce.number().min(0).max(100).default(21),
+  FACTURA_DIAS_VENCIMIENTO: z.coerce.number().int().positive().default(30),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -39,5 +42,9 @@ export const env = {
     refreshSecret: parsed.data.JWT_REFRESH_SECRET,
     accessExpiresIn: parsed.data.JWT_ACCESS_EXPIRES_IN,
     refreshExpiresIn: parsed.data.JWT_REFRESH_EXPIRES_IN,
+  },
+  facturacion: {
+    ivaPorcentaje: parsed.data.IVA_PORCENTAJE,
+    diasVencimiento: parsed.data.FACTURA_DIAS_VENCIMIENTO,
   },
 } as const;

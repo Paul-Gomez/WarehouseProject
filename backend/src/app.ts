@@ -4,6 +4,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { categoriaRouter } from './modules/categoria/categoria.routes.js';
 import { clienteRouter } from './modules/cliente/cliente.routes.js';
+import { facturaRouter } from './modules/factura/factura.routes.js';
 import { pedidoEstadoRouter } from './modules/pedido/pedido-estado.routes.js';
 import { pedidoRouter } from './modules/pedido/pedido.routes.js';
 import { productoRouter } from './modules/producto/producto.routes.js';
@@ -33,6 +34,7 @@ export function createApp(): Express {
   app.use('/api/productos', productoRouter);
   app.use('/api/pedidos', pedidoRouter);
   app.use('/api/pedidos', pedidoEstadoRouter);
+  app.use('/api/facturas', facturaRouter);
 
   app.use((_req: Request, res: Response) => {
     res.status(404).json({ error: 'Recurso no encontrado' });
