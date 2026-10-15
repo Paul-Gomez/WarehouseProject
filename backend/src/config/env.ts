@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+// Carga el .env de forma explícita. Antes la app arrancaba solo porque Prisma
+// Client lee el .env al importarse, así que dependía del orden de los imports.
+// Si no hay .env (Docker, CI, producción) las variables vienen del entorno.
+try {
+  process.loadEnvFile();
+} catch {
+  // sin fichero .env
+}
+
 /**
  * Lectura y validación de variables de entorno con Zod.
  *
