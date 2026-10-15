@@ -1,10 +1,15 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 
 import './index.css';
+import { AuthProvider } from './auth/AuthProvider';
+import { router } from './router';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <h1 className="p-8 text-2xl font-semibold">WarehouseProject</h1>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );
