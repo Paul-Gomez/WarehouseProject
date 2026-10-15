@@ -1,3 +1,4 @@
+import { prisma } from '../../config/prisma.js';
 import { AppError } from '../../errors/AppError.js';
 import { buildPaginatedResult } from '../../common/pagination.js';
 import { productoRepository } from './producto.repository.js';
@@ -19,8 +20,16 @@ export const productoService = {
     return producto;
   },
 
+  // Si el producto nace con stock, se registra como entrada en el libro de
+  // movimientos (en la misma transacción) para que stock y movimientos cuadren.
   crear(datos: CrearProductoInput) {
-    return productoRepository.crear(datos);
+    return prisma.$transaction(async (tx) => {
+      const producto = await productoRepository.crear(datos, tx);
+      if (producto.stock > 0) {
+        await productoRepository.registrarStockInicial(tx, producto.id, producto.stock);
+      }
+      return producto;
+    });
   },
 
   async actualizar(id: number, datos: ActualizarProductoInput) {

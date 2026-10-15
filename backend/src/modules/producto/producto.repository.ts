@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client';
 
+import type { Db } from '../../common/db.js';
 import { prisma } from '../../config/prisma.js';
 import { toSkipTake } from '../../common/pagination.js';
 import type { ActualizarProductoInput, CrearProductoInput } from './producto.schema.js';
@@ -53,8 +54,14 @@ export const productoRepository = {
     return prisma.producto.findUnique({ where: { id }, include: includeRelaciones });
   },
 
-  crear(datos: CrearProductoInput) {
-    return prisma.producto.create({ data: datos, include: includeRelaciones });
+  crear(datos: CrearProductoInput, db: Db = prisma) {
+    return db.producto.create({ data: datos, include: includeRelaciones });
+  },
+
+  async registrarStockInicial(db: Db, productoId: number, cantidad: number): Promise<void> {
+    await db.movimientoStock.create({
+      data: { productoId, tipo: 'ENTRADA', cantidad, motivo: 'Stock inicial al crear el producto' },
+    });
   },
 
   actualizar(id: number, datos: ActualizarProductoInput) {
