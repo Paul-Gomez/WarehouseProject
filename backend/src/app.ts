@@ -11,6 +11,7 @@ import { pedidoEstadoRouter } from './modules/pedido/pedido-estado.routes.js';
 import { pedidoRouter } from './modules/pedido/pedido.routes.js';
 import { productoRouter } from './modules/producto/producto.routes.js';
 import { proveedorRouter } from './modules/proveedor/proveedor.routes.js';
+import { stockRouter } from './modules/stock/stock.routes.js';
 
 /**
  * Construye la aplicación Express sin ponerla a escuchar.
@@ -34,6 +35,7 @@ export function createApp(): Express {
   app.use('/api/proveedores', proveedorRouter);
   app.use('/api/clientes', clienteRouter);
   app.use('/api/productos', productoRouter);
+  app.use('/api/productos', stockRouter);
   app.use('/api/pedidos', pedidoRouter);
   app.use('/api/pedidos', pedidoEstadoRouter);
   app.use('/api/facturas', facturaRouter);
