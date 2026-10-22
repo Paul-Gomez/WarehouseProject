@@ -1,5 +1,8 @@
+import cors from 'cors';
 import express, { type Express, type Request, type Response } from 'express';
+import helmet from 'helmet';
 
+import { env } from './config/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { categoriaRouter } from './modules/categoria/categoria.routes.js';
@@ -23,7 +26,12 @@ import { stockRouter } from './modules/stock/stock.routes.js';
 export function createApp(): Express {
   const app = express();
 
-  app.use(express.json());
+  app.set('trust proxy', env.trustProxy);
+  // Cabeceras de seguridad estándar (y quita "X-Powered-By: Express").
+  app.use(helmet());
+  // Solo hace falta si el frontend está en otro dominio (p. ej. Vercel + Render).
+  if (env.corsOrigins.length > 0) app.use(cors({ origin: env.corsOrigins }));
+  app.use(express.json({ limit: '100kb' }));
 
   // Endpoint de salud: útil para Docker healthchecks y monitores de uptime.
   app.get('/health', (_req: Request, res: Response) => {

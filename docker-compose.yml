@@ -28,6 +28,8 @@ services:
     restart: unless-stopped
     environment: &entorno-backend
       DATABASE_URL: postgresql://warehouseproject:warehouseproject@postgres:5432/warehouseproject?schema=public
+      # La API está detrás del nginx del frontend.
+      TRUST_PROXY: 1
       # Valores solo para probar en local: en producción se definen fuera.
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-solo-para-docker-local-cambiar-en-produccion-1}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-solo-para-docker-local-cambiar-en-produccion-2}
