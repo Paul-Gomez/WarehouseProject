@@ -7,4 +7,6 @@ export const ITEMS_NAV: ItemNav[] = [
   { to: '/', etiqueta: 'Inicio' },
   { to: '/productos', etiqueta: 'Productos' },
   { to: '/categorias', etiqueta: 'Categorías' },
+  { to: '/clientes', etiqueta: 'Clientes' },
+  { to: '/proveedores', etiqueta: 'Proveedores' },
 ];
