@@ -3,9 +3,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './layout/Layout';
 import { CategoriasPage } from './pages/categorias/CategoriasPage';
 import { ClientesPage } from './pages/clientes/ClientesPage';
+import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { FacturaDetallePage } from './pages/facturas/FacturaDetallePage';
 import { FacturasPage } from './pages/facturas/FacturasPage';
-import { InicioPage } from './pages/InicioPage';
 import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PedidoDetallePage } from './pages/pedidos/PedidoDetallePage';
@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
       {
         element: <Layout />,
         children: [
-          { path: '/', element: <InicioPage /> },
+          { path: '/', element: <DashboardPage /> },
           { path: '/pedidos', element: <PedidosPage /> },
           {
             // Crear y editar pedidos es cosa de ADMIN/COMERCIAL.
