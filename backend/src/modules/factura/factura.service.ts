@@ -65,17 +65,22 @@ export const facturaService = {
     });
   },
 
-  // Solo se puede anular una factura emitida (no pagada).
+  // Solo se puede anular una factura pendiente de cobro (emitida o vencida).
   anular(id: number) {
     return prisma.$transaction(async (tx) => {
       const factura = await obtenerFactura(id, tx);
 
-      const modificadas = await facturaRepository.actualizarSiEstado(tx, id, 'EMITIDA', {
-        estado: 'ANULADA',
-      });
+      const modificadas = await facturaRepository.actualizarSiEstado(
+        tx,
+        id,
+        ['EMITIDA', 'VENCIDA'],
+        {
+          estado: 'ANULADA',
+        },
+      );
       if (modificadas === 0) {
         throw AppError.conflict(
-          `Solo se puede anular una factura emitida (estado actual: ${factura.estado})`,
+          `Solo se puede anular una factura pendiente de cobro (estado actual: ${factura.estado})`,
         );
       }
 

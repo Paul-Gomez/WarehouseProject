@@ -49,14 +49,14 @@ export const pedidoEstadoRepository = {
 
   async marcarFacturaPagada(db: Db, pedidoId: number): Promise<void> {
     await db.factura.updateMany({
-      where: { pedidoId, estado: 'EMITIDA' },
+      where: { pedidoId, estado: { in: ['EMITIDA', 'VENCIDA'] } },
       data: { estado: 'PAGADA' },
     });
   },
 
-  async anularFacturaEmitida(db: Db, pedidoId: number): Promise<void> {
+  async anularFacturaPendiente(db: Db, pedidoId: number): Promise<void> {
     await db.factura.updateMany({
-      where: { pedidoId, estado: 'EMITIDA' },
+      where: { pedidoId, estado: { in: ['EMITIDA', 'VENCIDA'] } },
       data: { estado: 'ANULADA' },
     });
   },

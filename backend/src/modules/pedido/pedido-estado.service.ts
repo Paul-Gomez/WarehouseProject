@@ -84,7 +84,7 @@ export const pedidoEstadoService = {
 
   /**
    * BORRADOR o CONFIRMADO -> CANCELADO. Si estaba confirmado devuelve el stock
-   * y anula su factura emitida. Un pedido pagado ya no se puede cancelar.
+   * y anula su factura si aún no estaba pagada. Un pedido pagado ya no se puede cancelar.
    */
   cancelar(id: number) {
     return prisma.$transaction(async (tx) => {
@@ -119,7 +119,7 @@ export const pedidoEstadoService = {
           })),
         );
 
-        await pedidoEstadoRepository.anularFacturaEmitida(tx, id);
+        await pedidoEstadoRepository.anularFacturaPendiente(tx, id);
       }
 
       return obtenerPedido(id, tx);

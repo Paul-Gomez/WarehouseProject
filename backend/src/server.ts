@@ -1,11 +1,13 @@
 import { createApp } from './app.js';
 import { env } from './config/env.js';
 import { prisma } from './config/prisma.js';
+import { programarRevisionDeVencimientos } from './modules/factura/factura-vencimiento.js';
 
 const app = createApp();
 
 const server = app.listen(env.port, () => {
   console.info(`WarehouseProject API escuchando en http://localhost:${env.port} (${env.nodeEnv})`);
+  programarRevisionDeVencimientos();
 });
 
 async function shutdown(signal: string): Promise<void> {

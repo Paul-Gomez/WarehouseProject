@@ -77,11 +77,11 @@ export const facturaRepository = {
   async actualizarSiEstado(
     db: Db,
     id: number,
-    estadoEsperado: EstadoFactura,
+    estadosEsperados: EstadoFactura[],
     datos: Prisma.FacturaUncheckedUpdateManyInput,
   ): Promise<number> {
     const resultado = await db.factura.updateMany({
-      where: { id, estado: estadoEsperado },
+      where: { id, estado: { in: estadosEsperados } },
       data: datos,
     });
     return resultado.count;

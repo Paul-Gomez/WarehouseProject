@@ -91,7 +91,7 @@ export function FacturaDetallePage() {
         </dl>
       </div>
 
-      {puedeEscribir && datos.estado === 'EMITIDA' && (
+      {puedeEscribir && (datos.estado === 'EMITIDA' || datos.estado === 'VENCIDA') && (
         <div className="mt-6 flex justify-end">
           <Button variante="danger" onClick={() => setConfirmando(true)}>
             Anular factura
