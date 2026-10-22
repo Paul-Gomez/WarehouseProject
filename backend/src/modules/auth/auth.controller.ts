@@ -11,7 +11,10 @@ export const authController = {
   },
 
   async login(req: Request, res: Response) {
-    const resultado = await authService.login(req.validated.body as LoginInput, req.headers['user-agent']);
+    const resultado = await authService.login(
+      req.validated.body as LoginInput,
+      req.headers['user-agent'],
+    );
     res.json({ data: resultado });
   },
 
@@ -33,7 +36,12 @@ export const authController = {
     // llevaba el token.
     const usuario = await authRepository.buscarUsuarioPorId(req.usuario!.id);
     res.json({
-      data: usuario && { id: usuario.id, nombre: usuario.nombre, email: usuario.email, rol: usuario.rol },
+      data: usuario && {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        rol: usuario.rol,
+      },
     });
   },
 };

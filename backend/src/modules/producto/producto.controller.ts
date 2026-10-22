@@ -26,7 +26,10 @@ export const productoController = {
 
   async actualizar(req: Request, res: Response) {
     const { id } = req.validated.params as { id: number };
-    const producto = await productoService.actualizar(id, req.validated.body as ActualizarProductoInput);
+    const producto = await productoService.actualizar(
+      id,
+      req.validated.body as ActualizarProductoInput,
+    );
     res.json({ data: producto });
   },
 

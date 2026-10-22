@@ -21,7 +21,10 @@ interface ParDeTokens {
 
 // Emite un par de tokens y persiste el hash del refresh token. Se reutiliza
 // tanto en login como en refresh (rotación).
-async function emitirTokens(usuario: { id: number; rol: Rol }, userAgent?: string): Promise<ParDeTokens> {
+async function emitirTokens(
+  usuario: { id: number; rol: Rol },
+  userAgent?: string,
+): Promise<ParDeTokens> {
   const accessToken = signAccessToken({ sub: usuario.id, rol: usuario.rol });
   const refreshToken = signRefreshToken({ sub: usuario.id, jti: generarJti() });
 
@@ -70,14 +73,17 @@ export const authService = {
       throw AppError.unauthorized('Refresh token inválido o expirado');
     }
 
-    const tokenGuardado = await authRepository.buscarRefreshTokenPorHash(hashToken(refreshTokenRecibido));
+    const tokenGuardado = await authRepository.buscarRefreshTokenPorHash(
+      hashToken(refreshTokenRecibido),
+    );
 
     if (!tokenGuardado || tokenGuardado.revocado || tokenGuardado.expiraEn < new Date()) {
       throw AppError.unauthorized('Refresh token inválido o expirado');
     }
 
     const usuario = await authRepository.buscarUsuarioPorId(payload.sub);
-    if (!usuario || !usuario.activo) throw AppError.unauthorized('Refresh token inválido o expirado');
+    if (!usuario || !usuario.activo)
+      throw AppError.unauthorized('Refresh token inválido o expirado');
 
     // Rotación: el refresh token usado queda inutilizado y se emite uno
     // nuevo. Si alguien roba un refresh token y lo usa, el dueño legítimo lo
@@ -90,7 +96,9 @@ export const authService = {
   },
 
   async cerrarSesion(refreshTokenRecibido: string): Promise<void> {
-    const tokenGuardado = await authRepository.buscarRefreshTokenPorHash(hashToken(refreshTokenRecibido));
+    const tokenGuardado = await authRepository.buscarRefreshTokenPorHash(
+      hashToken(refreshTokenRecibido),
+    );
     // Si ya no existe o ya estaba revocado, el resultado deseado (que deje
     // de ser válido) ya se cumple: no hace falta devolver error.
     if (tokenGuardado && !tokenGuardado.revocado) {

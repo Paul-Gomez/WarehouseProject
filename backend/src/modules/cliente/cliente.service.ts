@@ -1,7 +1,11 @@
 import { AppError } from '../../errors/AppError.js';
 import { buildPaginatedResult } from '../../common/pagination.js';
 import { clienteRepository } from './cliente.repository.js';
-import type { ActualizarClienteInput, CrearClienteInput, ListarClientesQuery } from './cliente.schema.js';
+import type {
+  ActualizarClienteInput,
+  CrearClienteInput,
+  ListarClientesQuery,
+} from './cliente.schema.js';
 
 export const clienteService = {
   async listar(query: ListarClientesQuery) {

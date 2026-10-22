@@ -26,7 +26,10 @@ export const categoriaController = {
 
   async actualizar(req: Request, res: Response) {
     const { id } = req.validated.params as { id: number };
-    const categoria = await categoriaService.actualizar(id, req.validated.body as ActualizarCategoriaInput);
+    const categoria = await categoriaService.actualizar(
+      id,
+      req.validated.body as ActualizarCategoriaInput,
+    );
     res.json({ data: categoria });
   },
 

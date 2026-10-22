@@ -1,7 +1,11 @@
 import { AppError } from '../../errors/AppError.js';
 import { buildPaginatedResult } from '../../common/pagination.js';
 import { categoriaRepository } from './categoria.repository.js';
-import type { ActualizarCategoriaInput, CrearCategoriaInput, ListarCategoriasQuery } from './categoria.schema.js';
+import type {
+  ActualizarCategoriaInput,
+  CrearCategoriaInput,
+  ListarCategoriasQuery,
+} from './categoria.schema.js';
 
 export const categoriaService = {
   async listar(query: ListarCategoriasQuery) {

@@ -26,7 +26,10 @@ export const clienteController = {
 
   async actualizar(req: Request, res: Response) {
     const { id } = req.validated.params as { id: number };
-    const cliente = await clienteService.actualizar(id, req.validated.body as ActualizarClienteInput);
+    const cliente = await clienteService.actualizar(
+      id,
+      req.validated.body as ActualizarClienteInput,
+    );
     res.json({ data: cliente });
   },
 

@@ -14,7 +14,9 @@ export interface RefreshTokenPayload {
 }
 
 export function signAccessToken(payload: AccessTokenPayload): string {
-  return jwt.sign(payload, env.jwt.accessSecret, { expiresIn: env.jwt.accessExpiresIn as jwt.SignOptions['expiresIn'] });
+  return jwt.sign(payload, env.jwt.accessSecret, {
+    expiresIn: env.jwt.accessExpiresIn as jwt.SignOptions['expiresIn'],
+  });
 }
 
 export function signRefreshToken(payload: RefreshTokenPayload): string {

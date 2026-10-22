@@ -1,4 +1,10 @@
-import { PrismaClient, Rol, EstadoPedido, EstadoFactura, TipoMovimientoStock } from '@prisma/client';
+import {
+  PrismaClient,
+  Rol,
+  EstadoPedido,
+  EstadoFactura,
+  TipoMovimientoStock,
+} from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -23,13 +29,28 @@ async function main() {
   const passwordHash = await bcrypt.hash('Password123!', 10);
   const [admin, comercial, almacen] = await Promise.all([
     prisma.usuario.create({
-      data: { nombre: 'Ana Administradora', email: 'admin@warehouseproject.dev', passwordHash, rol: Rol.ADMIN },
+      data: {
+        nombre: 'Ana Administradora',
+        email: 'admin@warehouseproject.dev',
+        passwordHash,
+        rol: Rol.ADMIN,
+      },
     }),
     prisma.usuario.create({
-      data: { nombre: 'Carlos Comercial', email: 'comercial@warehouseproject.dev', passwordHash, rol: Rol.COMERCIAL },
+      data: {
+        nombre: 'Carlos Comercial',
+        email: 'comercial@warehouseproject.dev',
+        passwordHash,
+        rol: Rol.COMERCIAL,
+      },
     }),
     prisma.usuario.create({
-      data: { nombre: 'Marta Almacén', email: 'almacen@warehouseproject.dev', passwordHash, rol: Rol.ALMACEN },
+      data: {
+        nombre: 'Marta Almacén',
+        email: 'almacen@warehouseproject.dev',
+        passwordHash,
+        rol: Rol.ALMACEN,
+      },
     }),
   ]);
 
@@ -154,7 +175,8 @@ async function main() {
   const raton = productos[1]!;
   const cantidadTeclado = 2;
   const cantidadRaton = 3;
-  const totalPedido = teclado.precio.toNumber() * cantidadTeclado + raton.precio.toNumber() * cantidadRaton;
+  const totalPedido =
+    teclado.precio.toNumber() * cantidadTeclado + raton.precio.toNumber() * cantidadRaton;
 
   const pedido = await prisma.pedido.create({
     data: {
@@ -192,8 +214,14 @@ async function main() {
   });
 
   await Promise.all([
-    prisma.producto.update({ where: { id: teclado.id }, data: { stock: { decrement: cantidadTeclado } } }),
-    prisma.producto.update({ where: { id: raton.id }, data: { stock: { decrement: cantidadRaton } } }),
+    prisma.producto.update({
+      where: { id: teclado.id },
+      data: { stock: { decrement: cantidadTeclado } },
+    }),
+    prisma.producto.update({
+      where: { id: raton.id },
+      data: { stock: { decrement: cantidadRaton } },
+    }),
   ]);
 
   const cuotaIva = totalPedido * (TIPO_IVA / 100);

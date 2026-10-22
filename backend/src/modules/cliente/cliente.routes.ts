@@ -24,7 +24,11 @@ clienteRouter.get(
   asyncHandler(clienteController.listar),
 );
 
-clienteRouter.get('/:id', validate({ params: idParamSchema }), asyncHandler(clienteController.obtener));
+clienteRouter.get(
+  '/:id',
+  validate({ params: idParamSchema }),
+  asyncHandler(clienteController.obtener),
+);
 
 clienteRouter.post(
   '/',
