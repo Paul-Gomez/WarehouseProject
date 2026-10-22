@@ -5,6 +5,7 @@ export interface ItemNav {
 
 export const ITEMS_NAV: ItemNav[] = [
   { to: '/', etiqueta: 'Inicio' },
+  { to: '/pedidos', etiqueta: 'Pedidos' },
   { to: '/productos', etiqueta: 'Productos' },
   { to: '/categorias', etiqueta: 'Categorías' },
   { to: '/clientes', etiqueta: 'Clientes' },
