@@ -3,6 +3,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './layout/Layout';
 import { CategoriasPage } from './pages/categorias/CategoriasPage';
 import { ClientesPage } from './pages/clientes/ClientesPage';
+import { FacturaDetallePage } from './pages/facturas/FacturaDetallePage';
+import { FacturasPage } from './pages/facturas/FacturasPage';
 import { InicioPage } from './pages/InicioPage';
 import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -33,6 +35,8 @@ export const router = createBrowserRouter([
             ],
           },
           { path: '/pedidos/:id', element: <PedidoDetallePage /> },
+          { path: '/facturas', element: <FacturasPage /> },
+          { path: '/facturas/:id', element: <FacturaDetallePage /> },
           { path: '/productos', element: <ProductosPage /> },
           { path: '/categorias', element: <CategoriasPage /> },
           { path: '/clientes', element: <ClientesPage /> },
