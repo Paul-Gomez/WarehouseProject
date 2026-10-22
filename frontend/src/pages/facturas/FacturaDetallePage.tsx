@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { facturasApi, useAnularFactura } from '../../api/facturas';
 import { useCanWrite } from '../../auth/usePermisos';
+import { DescargarPdfButton } from '../../components/DescargarPdfButton';
 import { EstadoFacturaBadge } from '../../components/EstadoFacturaBadge';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
@@ -40,7 +41,12 @@ export function FacturaDetallePage() {
       <PageHeader
         titulo={datos.numero}
         descripcion={`Emitida el ${formatearFecha(datos.fecha)} · vence el ${formatearFecha(datos.fechaVencimiento)}`}
-        acciones={<EstadoFacturaBadge estado={datos.estado} />}
+        acciones={
+          <>
+            <EstadoFacturaBadge estado={datos.estado} />
+            <DescargarPdfButton facturaId={datos.id} numero={datos.numero} />
+          </>
+        }
       />
 
       {error && (
