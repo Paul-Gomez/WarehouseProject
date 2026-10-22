@@ -17,6 +17,7 @@ import { mensajeDeError } from '../../lib/errors';
 import { formatearEuros } from '../../lib/format';
 import type { Producto } from '../../types/producto';
 import { ProductoFormModal } from './ProductoFormModal';
+import { StockModal } from './StockModal';
 
 const STOCK_BAJO = 10;
 
@@ -28,6 +29,7 @@ export function ProductosPage() {
   const [incluirInactivos, setIncluirInactivos] = useState(false);
   const [editando, setEditando] = useState<Producto | 'nuevo' | null>(null);
   const [desactivando, setDesactivando] = useState<Producto | null>(null);
+  const [moviendoStock, setMoviendoStock] = useState<Producto | null>(null);
   const [errorAccion, setErrorAccion] = useState<string | null>(null);
 
   const lista = productosApi.useLista({
@@ -99,6 +101,11 @@ export function ProductosPage() {
       className: 'text-right',
       celda: (producto) => (
         <div className="flex justify-end gap-2">
+          {producto.activo && (
+            <Button variante="secondary" onClick={() => setMoviendoStock(producto)}>
+              Stock
+            </Button>
+          )}
           <Button variante="secondary" onClick={() => setEditando(producto)}>
             Editar
           </Button>
@@ -177,6 +184,9 @@ export function ProductosPage() {
           producto={editando === 'nuevo' ? undefined : editando}
           onCerrar={() => setEditando(null)}
         />
+      )}
+      {moviendoStock && (
+        <StockModal producto={moviendoStock} onCerrar={() => setMoviendoStock(null)} />
       )}
       {desactivando && (
         <ConfirmDialog
