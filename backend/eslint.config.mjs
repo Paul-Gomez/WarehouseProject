@@ -21,5 +21,10 @@ export default tseslint.config(
       eqeqeq: ['error', 'always'],
     },
   },
+  {
+    // Ficheros JS que ejecuta Node directamente (configuración de los tests).
+    files: ['**/*.js'],
+    languageOptions: { globals: { process: 'readonly' } },
+  },
   prettier,
 );

@@ -17,7 +17,8 @@ declare global {
 export const prisma =
   global.__prisma ??
   new PrismaClient({
-    log: env.isProduction ? ['error', 'warn'] : ['warn', 'error'],
+    // En los tests se provocan errores a propósito (duplicados, etc.): sin ruido.
+    log: env.isTest ? [] : ['warn', 'error'],
   });
 
 if (!env.isProduction) {
