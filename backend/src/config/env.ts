@@ -31,6 +31,11 @@ const envSchema = z.object({
 
   IVA_PORCENTAJE: z.coerce.number().min(0).max(100).default(21),
   FACTURA_DIAS_VENCIMIENTO: z.coerce.number().int().positive().default(30),
+
+  // Datos del emisor que salen en el PDF de las facturas.
+  EMPRESA_NOMBRE: z.string().default('WarehouseProject S.L.'),
+  EMPRESA_NIF: z.string().default('B00000000'),
+  EMPRESA_DIRECCION: z.string().default('Calle Ejemplo 1, 28001 Madrid'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -55,5 +60,10 @@ export const env = {
   facturacion: {
     ivaPorcentaje: parsed.data.IVA_PORCENTAJE,
     diasVencimiento: parsed.data.FACTURA_DIAS_VENCIMIENTO,
+  },
+  empresa: {
+    nombre: parsed.data.EMPRESA_NOMBRE,
+    nif: parsed.data.EMPRESA_NIF,
+    direccion: parsed.data.EMPRESA_DIRECCION,
   },
 } as const;
