@@ -1,3 +1,6 @@
+# Todo el stack: docker compose up -d --build   (abre http://localhost:8080)
+# Solo la base de datos, para desarrollar en local: docker compose up -d postgres
+# Datos de prueba: docker compose --profile seed run --rm seed
 services:
   postgres:
     image: postgres:16-alpine
@@ -16,6 +19,48 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      target: runtime
+    container_name: warehouseproject-backend
+    restart: unless-stopped
+    environment: &entorno-backend
+      DATABASE_URL: postgresql://warehouseproject:warehouseproject@postgres:5432/warehouseproject?schema=public
+      # Valores solo para probar en local: en producción se definen fuera.
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-solo-para-docker-local-cambiar-en-produccion-1}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-solo-para-docker-local-cambiar-en-produccion-2}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+  frontend:
+    build: ./frontend
+    container_name: warehouseproject-frontend
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # Tarea puntual (no arranca con "up"): carga los datos de prueba.
+  seed:
+    profiles: ['seed']
+    build:
+      context: ./backend
+      target: build
+    environment: *entorno-backend
+    command: ['npm', 'run', 'prisma:seed']
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   warehouseproject-postgres-data:
