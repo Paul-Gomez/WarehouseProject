@@ -43,7 +43,7 @@ jobs:
       - run: npm run build
 
   frontend:
-    name: Frontend (lint, tipos y build)
+    name: Frontend (lint, tipos, tests y build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -59,6 +59,7 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
+      - run: npm test
       - run: npm run build
 
   docker:
