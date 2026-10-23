@@ -1,12 +1,16 @@
 import type { ButtonHTMLAttributes } from 'react';
 
-type Variante = 'primary' | 'secondary' | 'danger';
+type Variante = 'primary' | 'secondary' | 'danger' | 'dangerSutil';
 
 const ESTILOS: Record<Variante, string> = {
   primary: 'bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600',
   secondary:
     'bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus-visible:outline-slate-400',
   danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600',
+  // Para acciones destructivas repetidas en cada fila de una tabla: el rojo
+  // macizo en todas las filas grita demasiado; el énfasis queda para el diálogo.
+  dangerSutil:
+    'bg-white text-red-700 shadow-none ring-1 ring-inset ring-slate-300 hover:bg-red-50 hover:ring-red-200 focus-visible:outline-red-600',
 };
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

@@ -4,7 +4,20 @@ export interface Columna<T> {
   cabecera: string;
   celda: (fila: T) => ReactNode;
   className?: string;
+  /** Desde qué ancho se ve. Las columnas secundarias se ocultan en móvil para que la tabla quepa. */
+  desde?: 'sm' | 'md' | 'lg' | 'xl';
 }
+
+// Clases completas (no montadas con plantillas) para que Tailwind las detecte.
+const VISIBLE_DESDE = {
+  sm: 'hidden sm:table-cell',
+  md: 'hidden md:table-cell',
+  lg: 'hidden lg:table-cell',
+  xl: 'hidden xl:table-cell',
+} as const;
+
+const clasesDe = <T,>(columna: Columna<T>) =>
+  `${columna.className ?? ''} ${columna.desde ? VISIBLE_DESDE[columna.desde] : ''}`;
 
 interface DataTableProps<T> {
   columnas: Columna<T>[];
@@ -30,7 +43,7 @@ export function DataTable<T>({
               <th
                 key={columna.cabecera}
                 scope="col"
-                className={`px-4 py-3 text-left font-medium text-slate-600 ${columna.className ?? ''}`}
+                className={`px-2.5 py-3 text-left font-medium text-slate-600 sm:px-4 ${clasesDe(columna)}`}
               >
                 {columna.cabecera}
               </th>
@@ -48,7 +61,7 @@ export function DataTable<T>({
             filas.map((fila) => (
               <tr key={clave(fila)} className="hover:bg-slate-50/60">
                 {columnas.map((columna) => (
-                  <td key={columna.cabecera} className={`px-4 py-3 ${columna.className ?? ''}`}>
+                  <td key={columna.cabecera} className={`px-2.5 py-3 sm:px-4 ${clasesDe(columna)}`}>
                     {columna.celda(fila)}
                   </td>
                 ))}

@@ -60,19 +60,29 @@ export function ProductosPage() {
   const columnas: Columna<Producto>[] = [
     {
       cabecera: 'SKU',
+      desde: 'sm',
       celda: (producto) => (
         <span className="font-mono text-xs whitespace-nowrap">{producto.sku}</span>
       ),
     },
     {
       cabecera: 'Nombre',
-      celda: (producto) => <span className="font-medium">{producto.nombre}</span>,
+      celda: (producto) => (
+        <>
+          <span className="font-medium">{producto.nombre}</span>
+          {/* En móvil el SKU y el precio van debajo del nombre en vez de en su columna. */}
+          <span className="mt-0.5 block text-xs text-slate-500 sm:hidden">
+            <span className="font-mono">{producto.sku}</span> · {formatearEuros(producto.precio)}
+          </span>
+        </>
+      ),
     },
-    { cabecera: 'Categoría', celda: (producto) => producto.categoria.nombre },
-    { cabecera: 'Proveedor', celda: (producto) => producto.proveedor?.nombre ?? '—' },
+    { cabecera: 'Categoría', desde: 'md', celda: (producto) => producto.categoria.nombre },
+    { cabecera: 'Proveedor', desde: 'xl', celda: (producto) => producto.proveedor?.nombre ?? '—' },
     {
       cabecera: 'Precio',
-      className: 'text-right',
+      desde: 'sm',
+      className: 'text-right whitespace-nowrap',
       celda: (producto) => formatearEuros(producto.precio),
     },
     {
@@ -88,6 +98,7 @@ export function ProductosPage() {
     },
     {
       cabecera: 'Estado',
+      desde: 'sm',
       celda: (producto) => (
         <Badge tono={producto.activo ? 'verde' : 'gris'}>
           {producto.activo ? 'Activo' : 'Inactivo'}
@@ -100,7 +111,7 @@ export function ProductosPage() {
       cabecera: 'Acciones',
       className: 'text-right',
       celda: (producto) => (
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col items-end gap-2 xl:flex-row xl:justify-end">
           {producto.activo && (
             <Button variante="secondary" onClick={() => setMoviendoStock(producto)}>
               Stock
@@ -111,7 +122,7 @@ export function ProductosPage() {
           </Button>
           {producto.activo && (
             <Button
-              variante="danger"
+              variante="dangerSutil"
               onClick={() => {
                 setErrorAccion(null);
                 setDesactivando(producto);
@@ -136,7 +147,11 @@ export function ProductosPage() {
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <SearchInput placeholder="Buscar por nombre o SKU…" onBuscar={buscar} className="w-64" />
+        <SearchInput
+          placeholder="Buscar por nombre o SKU…"
+          onBuscar={buscar}
+          className="w-full sm:w-64"
+        />
         <Select
           aria-label="Filtrar por categoría"
           value={categoriaId}
@@ -144,7 +159,7 @@ export function ProductosPage() {
             setCategoriaId(evento.target.value);
             setPagina(1);
           }}
-          className="w-52"
+          className="w-full sm:w-52"
         >
           <option value="">Todas las categorías</option>
           {categorias.data?.data.map((categoria) => (

@@ -52,12 +52,12 @@ export function CategoriasPage() {
       cabecera: 'Acciones',
       className: 'text-right',
       celda: (categoria) => (
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col items-end gap-2 sm:flex-row sm:justify-end">
           <Button variante="secondary" onClick={() => setEditando(categoria)}>
             Editar
           </Button>
           <Button
-            variante="danger"
+            variante="dangerSutil"
             onClick={() => {
               setErrorBorrado(null);
               setBorrando(categoria);

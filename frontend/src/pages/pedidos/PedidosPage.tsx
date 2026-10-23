@@ -39,16 +39,25 @@ export function PedidosPage() {
     {
       cabecera: 'Número',
       celda: (pedido) => (
-        <Link
-          to={`/pedidos/${pedido.id}`}
-          className="font-mono text-xs font-medium whitespace-nowrap text-indigo-600 hover:underline"
-        >
-          {pedido.numero}
-        </Link>
+        <>
+          <Link
+            to={`/pedidos/${pedido.id}`}
+            className="font-mono text-xs font-medium whitespace-nowrap text-indigo-600 hover:underline"
+          >
+            {pedido.numero}
+          </Link>
+          {/* En móvil la columna Cliente no cabe: va debajo del número. */}
+          <span className="mt-1 block text-slate-600 sm:hidden">{pedido.cliente.nombre}</span>
+        </>
       ),
     },
-    { cabecera: 'Fecha', celda: (pedido) => formatearFecha(pedido.fecha) },
-    { cabecera: 'Cliente', celda: (pedido) => pedido.cliente.nombre },
+    {
+      cabecera: 'Fecha',
+      desde: 'sm',
+      className: 'whitespace-nowrap',
+      celda: (pedido) => formatearFecha(pedido.fecha),
+    },
+    { cabecera: 'Cliente', desde: 'sm', celda: (pedido) => pedido.cliente.nombre },
     {
       cabecera: 'Base imponible',
       className: 'text-right',
@@ -57,6 +66,7 @@ export function PedidosPage() {
     { cabecera: 'Estado', celda: (pedido) => <EstadoPedidoBadge estado={pedido.estado} /> },
     {
       cabecera: 'Factura',
+      desde: 'md',
       celda: (pedido) =>
         pedido.factura ? (
           <Link
@@ -96,7 +106,7 @@ export function PedidosPage() {
             setEstado(evento.target.value);
             setPagina(1);
           }}
-          className="w-48"
+          className="w-full sm:w-48"
         >
           <option value="">Todos los estados</option>
           {ESTADOS.map((item) => (
@@ -112,7 +122,7 @@ export function PedidosPage() {
             setClienteId(evento.target.value);
             setPagina(1);
           }}
-          className="w-56"
+          className="w-full sm:w-56"
         >
           <option value="">Todos los clientes</option>
           {clientes.data?.data.map((cliente) => (

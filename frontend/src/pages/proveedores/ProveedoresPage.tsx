@@ -52,11 +52,12 @@ export function ProveedoresPage() {
       cabecera: 'Nombre',
       celda: (proveedor) => <span className="font-medium">{proveedor.nombre}</span>,
     },
-    { cabecera: 'Email', celda: (proveedor) => proveedor.email ?? '—' },
-    { cabecera: 'Teléfono', celda: (proveedor) => proveedor.telefono ?? '—' },
-    { cabecera: 'Dirección', celda: (proveedor) => proveedor.direccion ?? '—' },
+    { cabecera: 'Email', desde: 'md', celda: (proveedor) => proveedor.email ?? '—' },
+    { cabecera: 'Teléfono', desde: 'xl', celda: (proveedor) => proveedor.telefono ?? '—' },
+    { cabecera: 'Dirección', desde: 'xl', celda: (proveedor) => proveedor.direccion ?? '—' },
     {
       cabecera: 'Estado',
+      desde: 'sm',
       celda: (proveedor) => (
         <Badge tono={proveedor.activo ? 'verde' : 'gris'}>
           {proveedor.activo ? 'Activo' : 'Inactivo'}
@@ -69,13 +70,13 @@ export function ProveedoresPage() {
       cabecera: 'Acciones',
       className: 'text-right',
       celda: (proveedor) => (
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col items-end gap-2 sm:flex-row sm:justify-end">
           <Button variante="secondary" onClick={() => setEditando(proveedor)}>
             Editar
           </Button>
           {proveedor.activo && (
             <Button
-              variante="danger"
+              variante="dangerSutil"
               onClick={() => {
                 setErrorAccion(null);
                 setDesactivando(proveedor);
@@ -100,7 +101,7 @@ export function ProveedoresPage() {
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <SearchInput placeholder="Buscar proveedor…" onBuscar={buscar} className="w-64" />
+        <SearchInput placeholder="Buscar proveedor…" onBuscar={buscar} className="w-full sm:w-64" />
         <Checkbox
           label="Incluir inactivos"
           checked={incluirInactivos}

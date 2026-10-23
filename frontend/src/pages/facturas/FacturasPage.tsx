@@ -37,18 +37,30 @@ export function FacturasPage() {
     {
       cabecera: 'Número',
       celda: (factura) => (
-        <Link
-          to={`/facturas/${factura.id}`}
-          className="font-mono text-xs font-medium whitespace-nowrap text-indigo-600 hover:underline"
-        >
-          {factura.numero}
-        </Link>
+        <>
+          <Link
+            to={`/facturas/${factura.id}`}
+            className="font-mono text-xs font-medium whitespace-nowrap text-indigo-600 hover:underline"
+          >
+            {factura.numero}
+          </Link>
+          {/* En móvil la columna Cliente no cabe: va debajo del número. */}
+          <span className="mt-1 block text-slate-600 sm:hidden">
+            {factura.pedido.cliente.nombre}
+          </span>
+        </>
       ),
     },
-    { cabecera: 'Fecha', celda: (factura) => formatearFecha(factura.fecha) },
-    { cabecera: 'Cliente', celda: (factura) => factura.pedido.cliente.nombre },
+    {
+      cabecera: 'Fecha',
+      desde: 'sm',
+      className: 'whitespace-nowrap',
+      celda: (factura) => formatearFecha(factura.fecha),
+    },
+    { cabecera: 'Cliente', desde: 'sm', celda: (factura) => factura.pedido.cliente.nombre },
     {
       cabecera: 'Pedido',
+      desde: 'md',
       celda: (factura) => (
         <Link
           to={`/pedidos/${factura.pedido.id}`}
@@ -78,7 +90,7 @@ export function FacturasPage() {
             setEstado(evento.target.value);
             setPagina(1);
           }}
-          className="w-48"
+          className="w-full sm:w-48"
         >
           <option value="">Todos los estados</option>
           {ESTADOS.map((item) => (
@@ -94,7 +106,7 @@ export function FacturasPage() {
             setClienteId(evento.target.value);
             setPagina(1);
           }}
-          className="w-56"
+          className="w-full sm:w-56"
         >
           <option value="">Todos los clientes</option>
           {clientes.data?.data.map((cliente) => (

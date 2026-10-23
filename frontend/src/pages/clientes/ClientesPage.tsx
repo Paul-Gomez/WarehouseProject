@@ -52,11 +52,12 @@ export function ClientesPage() {
       cabecera: 'Nombre',
       celda: (cliente) => <span className="font-medium">{cliente.nombre}</span>,
     },
-    { cabecera: 'NIF', celda: (cliente) => cliente.nif ?? '—' },
-    { cabecera: 'Email', celda: (cliente) => cliente.email ?? '—' },
-    { cabecera: 'Teléfono', celda: (cliente) => cliente.telefono ?? '—' },
+    { cabecera: 'NIF', desde: 'md', celda: (cliente) => cliente.nif ?? '—' },
+    { cabecera: 'Email', desde: 'xl', celda: (cliente) => cliente.email ?? '—' },
+    { cabecera: 'Teléfono', desde: 'xl', celda: (cliente) => cliente.telefono ?? '—' },
     {
       cabecera: 'Estado',
+      desde: 'sm',
       celda: (cliente) => (
         <Badge tono={cliente.activo ? 'verde' : 'gris'}>
           {cliente.activo ? 'Activo' : 'Inactivo'}
@@ -69,13 +70,13 @@ export function ClientesPage() {
       cabecera: 'Acciones',
       className: 'text-right',
       celda: (cliente) => (
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-col items-end gap-2 sm:flex-row sm:justify-end">
           <Button variante="secondary" onClick={() => setEditando(cliente)}>
             Editar
           </Button>
           {cliente.activo && (
             <Button
-              variante="danger"
+              variante="dangerSutil"
               onClick={() => {
                 setErrorAccion(null);
                 setDesactivando(cliente);
@@ -100,7 +101,7 @@ export function ClientesPage() {
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <SearchInput placeholder="Buscar cliente…" onBuscar={buscar} className="w-64" />
+        <SearchInput placeholder="Buscar cliente…" onBuscar={buscar} className="w-full sm:w-64" />
         <Checkbox
           label="Incluir inactivos"
           checked={incluirInactivos}
