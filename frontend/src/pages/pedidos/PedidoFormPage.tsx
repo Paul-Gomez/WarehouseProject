@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { clientesApi } from '../../api/clientes';
 import { pedidosApi, usePedido } from '../../api/pedidos';
 import { productosApi } from '../../api/productos';
+import { IconoPapelera } from '../../components/icons';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -151,9 +152,11 @@ function PedidoForm({ pedido }: { pedido?: PedidoDetalle | undefined }) {
             return (
               <div
                 key={campo.id}
-                className="grid items-start gap-3 rounded-lg bg-white p-3 ring-1 ring-slate-200 sm:grid-cols-[1fr_6rem_8rem_auto]"
+                className="grid grid-cols-[5.5rem_1fr_auto] items-start gap-3 rounded-lg bg-white p-3 ring-1 ring-slate-200 sm:grid-cols-[1fr_6rem_8rem_auto]"
               >
+                {/* En móvil el producto ocupa toda la fila y debajo van cantidad, importe y quitar. */}
                 <Select
+                  className="col-span-3 sm:col-span-1"
                   aria-label="Producto"
                   error={errors.lineas?.[indice]?.productoId?.message}
                   {...register(`lineas.${indice}.productoId`)}
@@ -184,10 +187,11 @@ function PedidoForm({ pedido }: { pedido?: PedidoDetalle | undefined }) {
                 <Button
                   variante="secondary"
                   aria-label="Quitar línea"
+                  title="Quitar línea"
                   disabled={fields.length === 1}
                   onClick={() => remove(indice)}
                 >
-                  ✕
+                  <IconoPapelera className="size-4" />
                 </Button>
               </div>
             );
@@ -199,13 +203,15 @@ function PedidoForm({ pedido }: { pedido?: PedidoDetalle | undefined }) {
           </Button>
         </fieldset>
 
-        <div className="flex items-center justify-between border-t border-slate-200 pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-4">
           <p className="text-sm text-slate-600">
             Base imponible:{' '}
-            <span className="text-lg font-semibold text-slate-900">{formatearEuros(total)}</span>
-            <span className="ml-2 text-xs">(el IVA se calcula al facturar)</span>
+            <span className="text-lg font-semibold whitespace-nowrap text-slate-900">
+              {formatearEuros(total)}
+            </span>
+            <span className="block text-xs sm:ml-2 sm:inline">(el IVA se calcula al facturar)</span>
           </p>
-          <div className="flex gap-3">
+          <div className="ml-auto flex gap-3">
             <Link
               to={pedido ? `/pedidos/${pedido.id}` : '/pedidos'}
               className="inline-flex items-center rounded-md bg-white px-3.5 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-300 ring-inset hover:bg-slate-50"
