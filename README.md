@@ -50,7 +50,7 @@ base de datos relacional, tests de integración, Docker y CI.
 | Formularios   | React Hook Form + Zod                                               |
 | Gráficas      | Recharts                                                            |
 | PDF           | pdfkit                                                              |
-| Tests         | Jest · Supertest (contra una base de datos PostgreSQL real)         |
+| Tests         | Jest · Supertest (contra PostgreSQL real) · Vitest en el frontend   |
 | Contenedores  | Docker · Docker Compose · nginx                                     |
 | CI            | GitHub Actions (lint, formato, tipos, tests, build e imágenes)      |
 | Despliegue    | Render (API + PostgreSQL) · Vercel (frontend)                       |
@@ -266,11 +266,19 @@ npm test
 (`warehouseproject_test`, se crea y migra sola): autenticación y roles, rotación de tokens,
 pedidos (rollback, concurrencia, numeración), stock, facturas, vencimientos y PDF.
 
+```bash
+cd frontend
+npm test
+```
+
+Tests unitarios con Vitest de la lógica pura del frontend (por ahora, el formato de importes).
+Las pantallas se han revisado a mano en 360, 768, 1024, 1280 y 1440 px.
+
 ## CI
 
 Cada push ejecuta en GitHub Actions: lint, formato, comprobación de tipos, tests (con un
-PostgreSQL de servicio) y build del backend; lint, formato, tipos y build del frontend; y la
-construcción de las dos imágenes Docker.
+PostgreSQL de servicio) y build del backend; lint, formato, tipos, tests y build del frontend;
+y la construcción de las dos imágenes Docker.
 
 ## Despliegue
 

@@ -53,7 +53,7 @@ relational database, integration tests, Docker, and CI.
 | Forms        | React Hook Form + Zod                                            |
 | Charts       | Recharts                                                         |
 | PDF          | pdfkit                                                           |
-| Tests        | Jest · Supertest (against a real PostgreSQL database)            |
+| Tests        | Jest · Supertest (against real PostgreSQL) · Vitest (frontend)   |
 | Containers   | Docker · Docker Compose · nginx                                  |
 | CI           | GitHub Actions (lint, formatting, types, tests, build, images)   |
 | Deployment   | Render (API + PostgreSQL) · Vercel (frontend)                    |
@@ -269,11 +269,19 @@ npm test
 created and migrated automatically): authentication and roles, token rotation, orders
 (rollback, concurrency, numbering), stock, invoices, overdue handling, and PDF.
 
+```bash
+cd frontend
+npm test
+```
+
+Vitest unit tests for the frontend's pure logic (currently, money formatting). The screens
+have been checked by hand at 360, 768, 1024, 1280, and 1440 px.
+
 ## CI
 
 Every push runs on GitHub Actions: lint, formatting, type checking, tests (with a PostgreSQL
-service container), and build for the backend; lint, formatting, types, and build for the
-frontend; and building both Docker images.
+service container), and build for the backend; lint, formatting, types, tests, and build for
+the frontend; and building both Docker images.
 
 ## Deployment
 
