@@ -38,6 +38,13 @@ relational database, integration tests, Docker, and CI.
 | ![New order](docs/capturas/05-nuevo-pedido.png) | ![Invoice](docs/capturas/08-factura.png) |
 | ![Products](docs/capturas/06-productos.png) | ![Stock movements](docs/capturas/07-stock.png) |
 
+On mobile, secondary columns are hidden and the essentials move under the main value:
+
+<p>
+  <img src="docs/capturas/09-movil-resumen.png" alt="Dashboard on mobile" width="260">
+  <img src="docs/capturas/10-movil-pedidos.png" alt="Orders on mobile" width="260">
+</p>
+
 (The UI is in Spanish, the language of the business domain.)
 
 ## Stack

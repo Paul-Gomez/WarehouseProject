@@ -37,6 +37,13 @@ base de datos relacional, tests de integración, Docker y CI.
 | ![Nuevo pedido](docs/capturas/05-nuevo-pedido.png) | ![Factura](docs/capturas/08-factura.png) |
 | ![Productos](docs/capturas/06-productos.png) | ![Movimientos de stock](docs/capturas/07-stock.png) |
 
+En el móvil, las columnas secundarias se ocultan y lo esencial pasa debajo del dato principal:
+
+<p>
+  <img src="docs/capturas/09-movil-resumen.png" alt="Resumen en el móvil" width="260">
+  <img src="docs/capturas/10-movil-pedidos.png" alt="Pedidos en el móvil" width="260">
+</p>
+
 ## Stack
 
 | Capa          | Tecnología                                                          |
