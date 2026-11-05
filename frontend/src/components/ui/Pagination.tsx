@@ -10,7 +10,8 @@ export function Pagination({ meta, onCambiar }: PaginationProps) {
   const { page, totalPages, total } = meta;
 
   return (
-    <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
+    // En pantallas muy estrechas (320 px) los botones bajan a otra línea en vez de desbordar.
+    <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-sm text-slate-600">
       <p>
         {total} {total === 1 ? 'resultado' : 'resultados'}
       </p>
@@ -18,7 +19,7 @@ export function Pagination({ meta, onCambiar }: PaginationProps) {
         <Button variante="secondary" disabled={page <= 1} onClick={() => onCambiar(page - 1)}>
           Anterior
         </Button>
-        <span>
+        <span className="whitespace-nowrap">
           Página {page} de {totalPages}
         </span>
         <Button

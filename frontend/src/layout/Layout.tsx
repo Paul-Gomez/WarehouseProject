@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
 import { useAuth } from '../auth/useAuth';
@@ -10,14 +10,30 @@ export function Layout() {
   const { usuario, logout } = useAuth();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
+  // Con el menú desplegado en móvil, Escape lo cierra como cualquier desplegable.
+  useEffect(() => {
+    if (!menuAbierto) return;
+    const alPulsar = (evento: KeyboardEvent) => {
+      if (evento.key === 'Escape') setMenuAbierto(false);
+    };
+    document.addEventListener('keydown', alPulsar);
+    return () => document.removeEventListener('keydown', alPulsar);
+  }, [menuAbierto]);
+
   return (
     <div className="min-h-screen lg:flex">
       <aside
         id="menu-principal"
         className={`${menuAbierto ? 'block' : 'hidden'} w-full shrink-0 bg-slate-900 text-slate-100 lg:sticky lg:top-0 lg:block lg:h-screen lg:w-60 lg:overflow-y-auto`}
       >
-        <div className="px-6 py-5 text-lg font-semibold tracking-tight">WarehouseProject</div>
-        <nav className="space-y-1 px-3 pb-4">
+        <div className="hidden px-6 py-5 text-lg font-semibold tracking-tight lg:block">
+          WarehouseProject
+        </div>
+        {/* En móvil el nombre del usuario no cabe en la cabecera junto al de la app: va aquí. */}
+        <p className="px-6 pt-4 pb-2 text-xs text-slate-400 sm:hidden">
+          {usuario?.nombre} · {usuario?.rol}
+        </p>
+        <nav className="space-y-1 px-3 pt-2 pb-4 lg:pt-0">
           {ITEMS_NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -48,8 +64,10 @@ export function Layout() {
           >
             {menuAbierto ? <IconoCerrar /> : <IconoMenu />}
           </button>
+          {/* En móvil la barra lateral está plegada: sin esto no se ve el nombre de la app. */}
+          <span className="ml-2 font-semibold tracking-tight lg:hidden">WarehouseProject</span>
           <div className="ml-auto flex items-center gap-4">
-            <div className="text-right text-sm leading-tight">
+            <div className="hidden text-right text-sm leading-tight sm:block">
               <p className="font-medium">{usuario?.nombre}</p>
               <p className="text-xs text-slate-500">{usuario?.rol}</p>
             </div>
