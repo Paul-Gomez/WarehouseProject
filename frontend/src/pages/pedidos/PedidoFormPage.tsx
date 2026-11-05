@@ -10,6 +10,7 @@ import { productosApi } from '../../api/productos';
 import { IconoPapelera } from '../../components/icons';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
+import { clasesBoton } from '../../components/ui/estilosBoton';
 import { Input } from '../../components/ui/Input';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Select } from '../../components/ui/Select';
@@ -214,7 +215,7 @@ function PedidoForm({ pedido }: { pedido?: PedidoDetalle | undefined }) {
           <div className="ml-auto flex gap-3">
             <Link
               to={pedido ? `/pedidos/${pedido.id}` : '/pedidos'}
-              className="inline-flex items-center rounded-md bg-white px-3.5 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-300 ring-inset hover:bg-slate-50"
+              className={clasesBoton('secondary')}
             >
               Cancelar
             </Link>

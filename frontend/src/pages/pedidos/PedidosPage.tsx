@@ -7,6 +7,7 @@ import { useCanWrite } from '../../auth/usePermisos';
 import { EstadoPedidoBadge } from '../../components/EstadoPedidoBadge';
 import { Alert } from '../../components/ui/Alert';
 import { DataTable, type Columna } from '../../components/ui/DataTable';
+import { clasesBoton } from '../../components/ui/estilosBoton';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Pagination } from '../../components/ui/Pagination';
 import { Select } from '../../components/ui/Select';
@@ -90,7 +91,7 @@ export function PedidosPage() {
           puedeEscribir && (
             <Link
               to="/pedidos/nuevo"
-              className="inline-flex items-center rounded-md bg-marca px-3.5 py-2 text-sm font-medium text-white shadow-xs hover:bg-marca-fuerte"
+              className={clasesBoton()}
             >
               Nuevo pedido
             </Link>

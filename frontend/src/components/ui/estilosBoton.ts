@@ -1,0 +1,20 @@
+export type VarianteBoton = 'primary' | 'secondary' | 'danger' | 'dangerSutil';
+
+const ESTILOS: Record<VarianteBoton, string> = {
+  primary: 'bg-marca text-white hover:bg-marca-fuerte focus-visible:outline-marca',
+  secondary:
+    'bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus-visible:outline-slate-400',
+  danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600',
+  // Para acciones destructivas repetidas en cada fila de una tabla: el rojo
+  // macizo en todas las filas grita demasiado; el énfasis queda para el diálogo.
+  dangerSutil:
+    'bg-white text-red-700 shadow-none ring-1 ring-inset ring-slate-300 hover:bg-red-50 hover:ring-red-200 focus-visible:outline-red-600',
+};
+
+/**
+ * Clases de un botón. Las usa <Button> y también los <Link> que navegan pero
+ * deben verse como botones ("Nuevo pedido", "Cancelar"), para que no se copien
+ * a mano y pierdan el foco visible u otros estados.
+ */
+export const clasesBoton = (variante: VarianteBoton = 'primary') =>
+  `inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${ESTILOS[variante]}`;
