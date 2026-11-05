@@ -6,10 +6,7 @@ export function ForbiddenPage() {
       <p className="text-5xl font-semibold text-slate-300">403</p>
       <h1 className="mt-4 text-xl font-semibold">Sin permisos</h1>
       <p className="mt-2 text-sm text-slate-600">Tu rol no tiene acceso a esta sección.</p>
-      <Link
-        to="/"
-        className="mt-6 inline-block text-sm font-medium text-marca hover:underline"
-      >
+      <Link to="/" className="mt-6 inline-block text-sm font-medium text-marca hover:underline">
         Volver al inicio
       </Link>
     </div>

@@ -89,10 +89,7 @@ export function PedidosPage() {
         descripcion="Ventas a clientes: de borrador a pagado."
         acciones={
           puedeEscribir && (
-            <Link
-              to="/pedidos/nuevo"
-              className={clasesBoton()}
-            >
+            <Link to="/pedidos/nuevo" className={clasesBoton()}>
               Nuevo pedido
             </Link>
           )
