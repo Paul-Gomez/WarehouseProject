@@ -36,7 +36,7 @@ export function SearchInput({
         onChange={(evento) => setTexto(evento.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        className="block w-full rounded-md border-0 px-3 py-2 text-sm shadow-xs ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+        className="block w-full rounded-md border-0 bg-white px-3 py-2 text-sm shadow-xs ring-1 ring-inset ring-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-600 focus:outline-none"
       />
     </div>
   );

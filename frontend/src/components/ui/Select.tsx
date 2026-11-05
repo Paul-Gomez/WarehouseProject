@@ -8,6 +8,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export function Select({ label, error, id, className = '', children, ref, ...resto }: SelectProps) {
   const selectId = id ?? resto.name;
+  const errorId = error && selectId ? `${selectId}-error` : undefined;
 
   return (
     <div className={className}>
@@ -20,6 +21,7 @@ export function Select({ label, error, id, className = '', children, ref, ...res
         id={selectId}
         ref={ref}
         aria-invalid={error ? true : undefined}
+        aria-describedby={errorId}
         className={`block w-full rounded-md border-0 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs ring-1 ring-inset focus:ring-2 focus:ring-indigo-600 focus:outline-none ${
           error ? 'ring-red-400' : 'ring-slate-300'
         }`}
@@ -27,7 +29,11 @@ export function Select({ label, error, id, className = '', children, ref, ...res
       >
         {children}
       </select>
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error && (
+        <p id={errorId} className="mt-1 text-xs text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
