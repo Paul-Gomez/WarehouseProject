@@ -1,5 +1,22 @@
 @import 'tailwindcss';
 
+/*
+ * Colores con nombre propio de la app. Tailwind genera las clases a partir de
+ * ellos (bg-marca, text-marca, ring-marca...): para cambiar el color de acento
+ * basta con tocarlo aquí.
+ */
+@theme {
+  /* Acento: acciones principales, enlaces y foco. */
+  --color-marca: var(--color-indigo-600);
+  --color-marca-fuerte: var(--color-indigo-700);
+  /* Serie de datos de las gráficas y barras del resumen. */
+  --color-grafica: #2a78d6;
+}
+
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+::selection {
+  @apply bg-indigo-100 text-slate-900;
 }

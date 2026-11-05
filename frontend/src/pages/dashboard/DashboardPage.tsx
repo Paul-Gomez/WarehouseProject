@@ -95,7 +95,7 @@ export function DashboardPage() {
                   </div>
                   <div className="mt-1 h-2 rounded-full bg-slate-100">
                     <div
-                      className="h-2 rounded-full bg-[#2a78d6]"
+                      className="h-2 rounded-full bg-grafica"
                       style={{ width: `${(producto.unidades / maxUnidades) * 100}%` }}
                     />
                   </div>
@@ -117,7 +117,7 @@ export function DashboardPage() {
                   </span>
                   <div className="h-2 flex-1 rounded-full bg-slate-100">
                     <div
-                      className="h-2 rounded-full bg-[#2a78d6]"
+                      className="h-2 rounded-full bg-grafica"
                       style={{ width: `${(fila.cantidad / totalPedidos) * 100}%` }}
                     />
                   </div>
@@ -155,7 +155,7 @@ export function DashboardPage() {
                     ? `Mostrando ${datos.stockBajo.productos.length} de ${datos.stockBajo.total}`
                     : `${datos.stockBajo.total} en total`}
                 </span>
-                <Link to="/productos" className="font-medium text-indigo-600 hover:underline">
+                <Link to="/productos" className="font-medium text-marca hover:underline">
                   Ver catálogo
                 </Link>
               </div>

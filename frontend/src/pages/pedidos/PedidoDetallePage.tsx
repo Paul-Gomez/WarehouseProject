@@ -149,7 +149,7 @@ export function PedidoDetallePage() {
             <p className="flex items-center gap-2 font-medium">
               <Link
                 to={`/facturas/${datos.factura.id}`}
-                className="font-mono text-indigo-600 hover:underline"
+                className="font-mono text-marca hover:underline"
               >
                 {datos.factura.numero}
               </Link>

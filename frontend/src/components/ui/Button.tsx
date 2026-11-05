@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes } from 'react';
 type Variante = 'primary' | 'secondary' | 'danger' | 'dangerSutil';
 
 const ESTILOS: Record<Variante, string> = {
-  primary: 'bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:outline-indigo-600',
+  primary: 'bg-marca text-white hover:bg-marca-fuerte focus-visible:outline-marca',
   secondary:
     'bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus-visible:outline-slate-400',
   danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600',

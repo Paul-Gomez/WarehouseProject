@@ -17,7 +17,7 @@ export function Checkbox({ label, id, className = '', ref, ...resto }: CheckboxP
         id={inputId}
         ref={ref}
         type="checkbox"
-        className="size-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600"
+        className="size-4 rounded border-slate-300 text-marca focus:ring-marca"
         {...resto}
       />
       {label}

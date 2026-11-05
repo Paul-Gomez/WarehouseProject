@@ -40,7 +40,7 @@ export function FacturasPage() {
         <>
           <Link
             to={`/facturas/${factura.id}`}
-            className="font-mono text-xs font-medium whitespace-nowrap text-indigo-600 hover:underline"
+            className="font-mono text-xs font-medium whitespace-nowrap text-marca hover:underline"
           >
             {factura.numero}
           </Link>
@@ -64,7 +64,7 @@ export function FacturasPage() {
       celda: (factura) => (
         <Link
           to={`/pedidos/${factura.pedido.id}`}
-          className="font-mono text-xs whitespace-nowrap text-indigo-600 hover:underline"
+          className="font-mono text-xs whitespace-nowrap text-marca hover:underline"
         >
           {factura.pedido.numero}
         </Link>

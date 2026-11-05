@@ -8,7 +8,7 @@ export function NotFoundPage() {
       <p className="mt-2 text-sm text-slate-600">La dirección que buscas no existe.</p>
       <Link
         to="/"
-        className="mt-6 inline-block text-sm font-medium text-indigo-600 hover:underline"
+        className="mt-6 inline-block text-sm font-medium text-marca hover:underline"
       >
         Volver al inicio
       </Link>

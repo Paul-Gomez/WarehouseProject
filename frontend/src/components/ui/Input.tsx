@@ -23,7 +23,7 @@ export function Input({ label, error, id, className = '', ref, ...resto }: Input
         ref={ref}
         aria-invalid={error ? true : undefined}
         aria-describedby={errorId}
-        className={`block w-full rounded-md border-0 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs ring-1 ring-inset placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-600 focus:outline-none ${
+        className={`block w-full rounded-md border-0 bg-white px-3 py-2 text-sm text-slate-900 shadow-xs ring-1 ring-inset placeholder:text-slate-500 focus:ring-2 focus:ring-marca focus:outline-none ${
           error ? 'ring-red-400' : 'ring-slate-300'
         }`}
         {...resto}

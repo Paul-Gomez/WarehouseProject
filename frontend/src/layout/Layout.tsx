@@ -56,7 +56,7 @@ export function Layout() {
         <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
           <button
             type="button"
-            className="grid size-10 place-items-center rounded-md text-slate-600 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-indigo-600 lg:hidden"
+            className="grid size-10 place-items-center rounded-md text-slate-600 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-marca lg:hidden"
             aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
             aria-expanded={menuAbierto}
             aria-controls="menu-principal"

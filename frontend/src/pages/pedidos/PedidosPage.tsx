@@ -42,7 +42,7 @@ export function PedidosPage() {
         <>
           <Link
             to={`/pedidos/${pedido.id}`}
-            className="font-mono text-xs font-medium whitespace-nowrap text-indigo-600 hover:underline"
+            className="font-mono text-xs font-medium whitespace-nowrap text-marca hover:underline"
           >
             {pedido.numero}
           </Link>
@@ -71,7 +71,7 @@ export function PedidosPage() {
         pedido.factura ? (
           <Link
             to={`/facturas/${pedido.factura.id}`}
-            className="font-mono text-xs whitespace-nowrap text-indigo-600 hover:underline"
+            className="font-mono text-xs whitespace-nowrap text-marca hover:underline"
           >
             {pedido.factura.numero}
           </Link>
@@ -90,7 +90,7 @@ export function PedidosPage() {
           puedeEscribir && (
             <Link
               to="/pedidos/nuevo"
-              className="inline-flex items-center rounded-md bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white shadow-xs hover:bg-indigo-700"
+              className="inline-flex items-center rounded-md bg-marca px-3.5 py-2 text-sm font-medium text-white shadow-xs hover:bg-marca-fuerte"
             >
               Nuevo pedido
             </Link>
