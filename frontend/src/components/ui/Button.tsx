@@ -23,7 +23,8 @@ export function Button({
       {...resto}
     >
       {cargando && (
-        <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+        // Con movimiento reducido no gira: el botón desactivado y el aro ya indican la espera.
+        <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent motion-reduce:animate-none" />
       )}
       {children}
     </button>
