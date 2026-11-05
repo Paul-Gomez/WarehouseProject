@@ -1,12 +1,15 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-import { formatearEuros } from '../../lib/format';
+import { formatearEuros, formatearEurosEnteros } from '../../lib/format';
 import type { Dashboard } from '../../types/dashboard';
 
-// Azul de la paleta de visualización, único color: es una sola serie.
-const COLOR_BARRA = '#2a78d6';
-const COLOR_EJE = '#898781';
-const COLOR_REJILLA = '#e1e0d9';
+// Variables del tema (index.css): un solo color porque es una sola serie, y los
+// grises de la paleta slate del resto de la app. El texto de los ejes es
+// slate-500 para llegar a 4,5:1 sobre blanco.
+const COLOR_BARRA = 'var(--color-grafica)';
+const COLOR_EJE = 'var(--color-slate-500)';
+const COLOR_LINEA_EJE = 'var(--color-slate-300)';
+const COLOR_REJILLA = 'var(--color-slate-200)';
 
 const MES_CORTO = new Intl.DateTimeFormat('es-ES', { month: 'short', timeZone: 'UTC' });
 
@@ -31,18 +34,18 @@ export function VentasPorMesGrafica({ datos }: { datos: Dashboard['ventasPorMes'
             <XAxis
               dataKey="mes"
               tickLine={false}
-              axisLine={{ stroke: '#c3c2b7' }}
+              axisLine={{ stroke: COLOR_LINEA_EJE }}
               tick={{ fill: COLOR_EJE, fontSize: 12 }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
-              width={56}
+              width={64}
               tick={{ fill: COLOR_EJE, fontSize: 12 }}
-              tickFormatter={(valor: number) => `${valor} €`}
+              tickFormatter={formatearEurosEnteros}
             />
             <Tooltip
-              cursor={{ fill: 'rgba(11, 11, 11, 0.04)' }}
+              cursor={{ fill: 'var(--color-slate-100)' }}
               formatter={(valor, _nombre, item) => [
                 `${formatearEuros(Number(valor))} · ${(item.payload as { pedidos: number }).pedidos} pedidos`,
                 'Ventas',
